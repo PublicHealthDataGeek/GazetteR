@@ -4,19 +4,28 @@
 #' @param start_publish_date
 #' @param end_publish_date
 #' @param base_url
+#' @param tidy Do you want tidy output? `TRUE` by default
 #'
 #' @return
 #' @export
 #'
 #' @examples
-#'
-#' test_jan_2021 = get_gazette_feed(categorycode = 15,
-#' start_publish_date = "01/01/2021",
-#' end_publish_date = "31/01/2021") # works (jan 21) n = 198
+#' test_tidy = get_gazette_feed(
+#'   categorycode = 15,
+#'   start_publish_date = "01/01/2021",
+#'   end_publish_date = "31/01/2021"
+#' )
+#' test_jan_2021 = get_gazette_feed(
+#'   categorycode = 15,
+#'   start_publish_date = "01/01/2021",
+#'   end_publish_date = "31/01/2021",
+#'   tidy = FALSE
+#' )
 get_gazette_feed = function(categorycode = 15,
                             start_publish_date = "01/01/1998",
                             end_publish_date = "31/12/1998",  # NB CANT BE SAME AS START DATE - they use diff URL which wont work
-                            base_url = "https://www.thegazette.co.uk/"
+                            base_url = "https://www.thegazette.co.uk/",
+                            tidy = TRUE
 ) {
   # browser()
   u = httr::modify_url(
@@ -47,5 +56,27 @@ get_gazette_feed = function(categorycode = 15,
     notices_entries = rbind(notices_entries, notices_add_entries)
     i = i + 1 # increment counter
   }
-  return(notices_entries)
+  if (tidy) {
+    return(tidy_gazette_feed(notices_entries))
+  } else {
+    return(notices_entries)
+  }
+}
+
+# Todo: make public
+tidy_gazette_feed = function(df) {
+  vars = c("author", "category")
+  df %>%
+    dplyr::select(!all_of(vars)) %>%
+    dplyr::rename(notice_url = id,
+           status = `f:status`,
+           notice_code = `f:notice-code`,
+           date_updated = `updated`,
+           date_published = `published`) %>%
+    dplyr::mutate(date_updated = lubridate::date(date_updated),
+           date_published = lubridate::date(date_published),
+           notice_url = stringr::str_remove(notice_url, "id/"),
+           notice_id = stringr::str_remove(notice_url, "https://www.thegazette.co.uk/notice/"),
+           content = stringr::str_to_lower(content)) %>%
+    dplyr::mutate_at(c("status", "notice_code", "title"), factor)
 }

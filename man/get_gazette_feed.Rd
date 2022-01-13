@@ -8,11 +8,12 @@ get_gazette_feed(
   categorycode = 15,
   start_publish_date = "01/01/1998",
   end_publish_date = "31/12/1998",
-  base_url = "https://www.thegazette.co.uk/"
+  base_url = "https://www.thegazette.co.uk/",
+  tidy = TRUE
 )
 }
 \arguments{
-\item{base_url}{}
+\item{tidy}{Do you want tidy output? `TRUE` by default}
 }
 \value{
 
@@ -21,8 +22,15 @@ get_gazette_feed(
 Get data from the Gazette API
 }
 \examples{
-
-test_jan_2021 = get_gazette_feed(categorycode = 15,
-start_publish_date = "01/01/2021",
-end_publish_date = "31/01/2021") # works (jan 21) n = 198
+test_tidy = get_gazette_feed(
+  categorycode = 15,
+  start_publish_date = "01/01/2021",
+  end_publish_date = "31/01/2021"
+)
+test_jan_2021 = get_gazette_feed(
+  categorycode = 15,
+  start_publish_date = "01/01/2021",
+  end_publish_date = "31/01/2021",
+  tidy = FALSE
+)
 }
