@@ -91,6 +91,7 @@ tidy_gazette_feed = function(df) {
 #' @export
 #'
 #' @examples
+#' # From URL: https://www.thegazette.co.uk/notice/3487301
 #' x4 = get_notice_content(3487301, "contraflow")
 #' x4b = get_notice_content4(3487301, search_terms = c("contraflow", "contra-flow"))
 #' x4c = get_notice_content4(3487301, search_terms = c("cycling"))
@@ -116,10 +117,10 @@ get_notice_content = function(id, search_terms){
     dplyr::mutate(borough = factor(borough))  # factors borough
 }
 
-#' Title
+#' Get content associated with ids
 #'
-#' @param ids
-#' @param search_terms
+#' @param ids Notice IDs
+#' @param search_terms Character of search terms
 #'
 #' @return
 #' @export
@@ -130,3 +131,8 @@ get_notice_content = function(id, search_terms){
 get_content = function(ids, search_terms) {
   purrr::map_dfr(ids, get_notice_content, search_terms)
 }
+
+# # Test
+# jsonlite::fromJSON("https://www.thegazette.co.uk/notice/3487301/data.rdfjson?view=linked-data")
+# jsonpoint = sf::st_as_sf(data.frame(x = 0.047331, y = 51.507702), coords = c("x", "y"), crs = 4326)
+# mapview::mapview(jsonpoint)
