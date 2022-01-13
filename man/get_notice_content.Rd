@@ -16,6 +16,7 @@ get_notice_content(id, search_terms)
 Get notice content
 }
 \examples{
+# From URL: https://www.thegazette.co.uk/notice/3487301
 x4 = get_notice_content(3487301, "contraflow")
 x4b = get_notice_content4(3487301, search_terms = c("contraflow", "contra-flow"))
 x4c = get_notice_content4(3487301, search_terms = c("cycling"))

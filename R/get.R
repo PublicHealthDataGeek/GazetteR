@@ -16,6 +16,11 @@
 #'   start_publish_date = "01/01/2021",
 #'   end_publish_date = "31/01/2021"
 #' )
+#' names(test_tidy)
+#' # [1] "notice_url"     "status"         "notice_code"    "title"          "date_updated"
+#' # [6] "date_published" "content"        "notice_id"
+#' test_tidy$notice_id[1:6]
+#' # [1] "3724469" "3724463" "3724461" "3724458" "3724448" "3725065"
 #' test_jan_2021 = get_gazette_feed(
 #'   categorycode = 15,
 #'   start_publish_date = "01/01/2021",
@@ -28,7 +33,7 @@ get_gazette_feed = function(categorycode = 15,
                             base_url = "https://www.thegazette.co.uk/",
                             tidy = TRUE
 ) {
-  browser()
+  # browser()
   u = httr::modify_url(
     base_url,
     path = "all-notices/notice/data.json",
@@ -68,6 +73,7 @@ get_gazette_feed = function(categorycode = 15,
 tidy_gazette_feed = function(df) {
   vars = c("author", "category")
   df %>%
+    tibble::as_tibble() %>%
     dplyr::select(!all_of(vars)) %>%
     dplyr::rename(notice_url = id,
            status = `f:status`,
@@ -128,11 +134,13 @@ get_notice_content = function(id, search_terms){
 #' @examples
 #' content = get_content(c(3487301, 3487301), search_terms = "contraflow")
 #' dim(content)
+#' names(content)
+#' content$pub_date
 get_content = function(ids, search_terms) {
   purrr::map_dfr(ids, get_notice_content, search_terms)
 }
 
 # # Test
-# jsonlite::fromJSON("https://www.thegazette.co.uk/notice/3487301/data.rdfjson?view=linked-data")
+# jsn = jsonlite::fromJSON("https://www.thegazette.co.uk/notice/3487301/data.rdfjson?view=linked-data")
 # jsonpoint = sf::st_as_sf(data.frame(x = 0.047331, y = 51.507702), coords = c("x", "y"), crs = 4326)
 # mapview::mapview(jsonpoint)

@@ -2,19 +2,24 @@
 % Please edit documentation in R/get.R
 \name{get_content}
 \alias{get_content}
-\title{Title}
+\title{Get content associated with ids}
 \usage{
 get_content(ids, search_terms)
 }
 \arguments{
-\item{search_terms}{}
+\item{ids}{Notice IDs}
+
+\item{search_terms}{Character of search terms}
 }
 \value{
 
 }
 \description{
-Title
+Get content associated with ids
 }
 \examples{
-get_content(c(3487301, 3487301), search_terms = "contraflow")
+content = get_content(c(3487301, 3487301), search_terms = "contraflow")
+dim(content)
+names(content)
+content$pub_date
 }

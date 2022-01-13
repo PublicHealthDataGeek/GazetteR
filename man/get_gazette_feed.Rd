@@ -14,6 +14,8 @@ get_gazette_feed(
 }
 \arguments{
 \item{tidy}{Do you want tidy output? `TRUE` by default}
+
+\item{return_content}{Get ids (warning: slower), `FALSE` by default}
 }
 \value{
 
@@ -27,6 +29,11 @@ test_tidy = get_gazette_feed(
   start_publish_date = "01/01/2021",
   end_publish_date = "31/01/2021"
 )
+names(test_tidy)
+# [1] "notice_url"     "status"         "notice_code"    "title"          "date_updated"
+# [6] "date_published" "content"        "notice_id"
+test_tidy$notice_id[1:6]
+# [1] "3724469" "3724463" "3724461" "3724458" "3724448" "3725065"
 test_jan_2021 = get_gazette_feed(
   categorycode = 15,
   start_publish_date = "01/01/2021",
