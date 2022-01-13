@@ -1,3 +1,18 @@
+#' Get data from the Gazette API
+#'
+#' @param categorycode
+#' @param start_publish_date
+#' @param end_publish_date
+#' @param base_url
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' test_jan_2021 = get_gazette_feed(categorycode = 15,
+#' start_publish_date = "01/01/2021",
+#' end_publish_date = "31/01/2021") # works (jan 21) n = 198
 get_gazette_feed = function(categorycode = 15,
                             start_publish_date = "01/01/1998",
                             end_publish_date = "31/12/1998",  # NB CANT BE SAME AS START DATE - they use diff URL which wont work
@@ -22,7 +37,7 @@ get_gazette_feed = function(categorycode = 15,
   Sys.sleep(1) # pause for 1 sec
   i = 2
   while(nrow(notices_entries) != total_notices) {
-    v = paste0(str_replace_all(notices$id, c("feed" = "json", "page=1" = paste0("page=", i))))
+    v = paste0(stringr::str_replace_all(notices$id, c("feed" = "json", "page=1" = paste0("page=", i))))
     notices_add = jsonlite::fromJSON(txt = v)
     notices_add_entries = notices_add$entry
     notices_add_entries$author = notices_add_entries$author$name # changes column that is a dataframe to an actual column
