@@ -27,7 +27,7 @@ get_gazette_feed = function(categorycode = 15,
                             base_url = "https://www.thegazette.co.uk/",
                             tidy = TRUE
 ) {
-  # browser()
+  browser()
   u = httr::modify_url(
     base_url,
     path = "all-notices/notice/data.json",
@@ -79,4 +79,28 @@ tidy_gazette_feed = function(df) {
            notice_id = stringr::str_remove(notice_url, "https://www.thegazette.co.uk/notice/"),
            content = stringr::str_to_lower(content)) %>%
     dplyr::mutate_at(c("status", "notice_code", "title"), factor)
+}
+
+#' Get notice content
+#'
+#' @param id
+#' @param search_terms
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_notice_content = function(id, search_terms){
+  url = paste0("https://www.thegazette.co.uk/notice/", id)
+  u = read_html(url)
+  content = str_to_lower(u %>% html_nodes("p") %>% html_text2())
+  search = str_detect(content, paste(search_terms, collapse = "|"))
+  search_result = TRUE %in% search
+  borough = u %>% html_node("span") %>% html_text2()  # gets borough
+  pub_date = u %>% html_node("dd time") %>% html_text2() #    gets publication date
+  notice_code = u %>% html_node("dd:nth-child(10)") %>% html_text2() # gets notice code
+  notice = data.frame(notice_code, pub_date, borough, search_result) # creates a dataframe
+  notice = notice %>%
+    mutate(pub_date = dmy(sub("\\,.*", "", pub_date))) %>%  # puts date in correct format
+    mutate(borough = factor(borough))  # factors borough
 }

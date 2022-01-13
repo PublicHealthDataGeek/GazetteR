@@ -12,7 +12,7 @@ get_gazette_feed = function(categorycode = 15,
                             end_publish_date = "31/12/1998",  # NB CANT BE SAME AS START DATE - they use diff URL which wont work
                             base_url = "https://www.thegazette.co.uk/"
 ) {
-  # browser()
+  browser()
   u = httr::modify_url(
     base_url,
     path = "all-notices/notice/data.json",
@@ -21,18 +21,18 @@ get_gazette_feed = function(categorycode = 15,
       `start-publish-date` = start_publish_date,
       `end-publish-date` = end_publish_date)) # needs to be big long enough to get data back
   #put content in df
-  notices = jsonlite::fromJSON(txt = u)  # 
+  notices = jsonlite::fromJSON(txt = u)  #
   total_notices = notices$`f:total` # get total number of notice returned by the search
   notices_entries = notices$entry  # get relevent data into df
   notices_entries$author = notices_entries$author$name # changes column that is a dataframe to an actual column
   notices_entries$category = notices_entries$category$`@term`  # changes column that is a dataframe to an actual column
   #notices_entries = subset(notices_entries, select = -c(link, `geo:Point`)) # drop columns
   notices_entries = subset(notices_entries, select = c(id, `f:status`, `f:notice-code`, title, author, updated, published, category, content)) # keep columns
-  Sys.sleep(1) # pause for 1 sec 
+  Sys.sleep(1) # pause for 1 sec
   i = 2
   while(nrow(notices_entries) != total_notices) {
     v = paste0(str_replace_all(notices$id, c("feed" = "json", "page=1" = paste0("page=", i))))
-    notices_add = jsonlite::fromJSON(txt = v) 
+    notices_add = jsonlite::fromJSON(txt = v)
     notices_add_entries = notices_add$entry
     notices_add_entries$author = notices_add_entries$author$name # changes column that is a dataframe to an actual column
     notices_add_entries$category = notices_add_entries$category$`@term`  # changes column that is a dataframe to an actual column
@@ -44,22 +44,22 @@ get_gazette_feed = function(categorycode = 15,
   return(notices_entries)
 }
 
-test_jan_2021 = get_gazette_feed(categorycode = 15, 
-                             start_publish_date = "01/01/2021", 
+test_jan_2021 = get_gazette_feed(categorycode = 15,
+                             start_publish_date = "01/01/2021",
                              end_publish_date = "31/01/2021") # works (jan 21) n = 198
-test_2021 = get_gazette_feed(categorycode = 15, 
-                             start_publish_date = "01/01/2021", 
+test_2021 = get_gazette_feed(categorycode = 15,
+                             start_publish_date = "01/01/2021",
                              end_publish_date = "31/12/2021") # n = 3070
 
-test_2020 = get_gazette_feed(categorycode = 15, 
-                             start_publish_date = "01/01/2020", 
-                             end_publish_date = "31/12/2020") # works fine n = 2504 
+test_2020 = get_gazette_feed(categorycode = 15,
+                             start_publish_date = "01/01/2020",
+                             end_publish_date = "31/12/2020") # works fine n = 2504
 
-test_2019 = get_gazette_feed(categorycode = 15, 
-                             start_publish_date = "01/01/2019", 
+test_2019 = get_gazette_feed(categorycode = 15,
+                             start_publish_date = "01/01/2019",
                              end_publish_date = "31/12/2019") # works fine and gives correct number 2917
 
-test_1998 = get_gazette_feed(categorycode = 15, 
-                            start_publish_date = "01/01/1998", 
+test_1998 = get_gazette_feed(categorycode = 15,
+                            start_publish_date = "01/01/1998",
                             end_publish_date = "31/12/1998")  # should give 3431 notices according to websearch but gives 3432
 

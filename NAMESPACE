@@ -2,4 +2,5 @@
 
 export("%>%")
 export(get_gazette_feed)
+export(get_notice_content)
 importFrom(magrittr,"%>%")
