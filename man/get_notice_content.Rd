@@ -15,3 +15,9 @@ get_notice_content(id, search_terms)
 \description{
 Get notice content
 }
+\examples{
+x4 = get_notice_content(3487301, "contraflow")
+x4b = get_notice_content4(3487301, search_terms = c("contraflow", "contra-flow"))
+x4c = get_notice_content4(3487301, search_terms = c("cycling"))
+x4d = get_notice_content4(3487301, search_terms = c("taxi"))
+}

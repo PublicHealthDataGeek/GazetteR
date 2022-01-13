@@ -5,6 +5,7 @@
 #' @param end_publish_date
 #' @param base_url
 #' @param tidy Do you want tidy output? `TRUE` by default
+#' @param return_content Get ids (warning: slower), `FALSE` by default
 #'
 #' @return
 #' @export
@@ -90,17 +91,42 @@ tidy_gazette_feed = function(df) {
 #' @export
 #'
 #' @examples
+#' x4 = get_notice_content(3487301, "contraflow")
+#' x4b = get_notice_content4(3487301, search_terms = c("contraflow", "contra-flow"))
+#' x4c = get_notice_content4(3487301, search_terms = c("cycling"))
+#' x4d = get_notice_content4(3487301, search_terms = c("taxi"))
 get_notice_content = function(id, search_terms){
+  # browser()
   url = paste0("https://www.thegazette.co.uk/notice/", id)
-  u = read_html(url)
-  content = str_to_lower(u %>% html_nodes("p") %>% html_text2())
-  search = str_detect(content, paste(search_terms, collapse = "|"))
-  search_result = TRUE %in% search
-  borough = u %>% html_node("span") %>% html_text2()  # gets borough
-  pub_date = u %>% html_node("dd time") %>% html_text2() #    gets publication date
-  notice_code = u %>% html_node("dd:nth-child(10)") %>% html_text2() # gets notice code
-  notice = data.frame(notice_code, pub_date, borough, search_result) # creates a dataframe
+  u = rvest::read_html(url)
+  content = stringr::str_to_lower(u %>% rvest::html_nodes("p") %>% rvest::html_text2())
+  search = stringr::str_detect(content, paste(search_terms, collapse = "|"))
+  search_result = any(search)
+  borough = u %>% rvest::html_node("span") %>% rvest::html_text2()  # gets borough
+  pub_date = u %>% rvest::html_node("dd time") %>% rvest::html_text2() #    gets publication date
+  notice_code = u %>% rvest::html_node("dd:nth-child(10)") %>% rvest::html_text2() # gets notice code
+  # # process content
+  # class(content)
+  # length(content)
+  content_pasted = paste(content, collapse = "\n")
+  # length(content_pasted) # single output
+  notice = data.frame(notice_code, pub_date, borough, search_result, content_pasted) # creates a dataframe
   notice = notice %>%
-    mutate(pub_date = dmy(sub("\\,.*", "", pub_date))) %>%  # puts date in correct format
-    mutate(borough = factor(borough))  # factors borough
+    dplyr::mutate(pub_date = lubridate::dmy(sub("\\,.*", "", pub_date))) %>%  # puts date in correct format
+    dplyr::mutate(borough = factor(borough))  # factors borough
+}
+
+#' Title
+#'
+#' @param ids
+#' @param search_terms
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' content = get_content(c(3487301, 3487301), search_terms = "contraflow")
+#' dim(content)
+get_content = function(ids, search_terms) {
+  purrr::map_dfr(ids, get_notice_content, search_terms)
 }
