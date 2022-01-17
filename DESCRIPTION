@@ -1,6 +1,6 @@
 Package: GazetteR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: facilitate the easy analysis of The Gazette information in R
 Version: 0.1.0
 Author: c(
     person("Caroline", "Tait", email = "ugm4cjt@leeds.ac.uk", role = c("aut", "cre"),
@@ -8,9 +8,7 @@ Author: c(
     person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut"),
       comment = c(ORCID = "0000-0001-5679-6536"))
   )
-Maintainer: The package maintainer ugm4cjt@leeds.ac.uk
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: This package enables users to search the online Gazette and identify notices that they are interested in obtaining.  It then obtains those notices and allows users to search the notice content to establish if they are relevant. All this data is then available in R dataframes to facilitate further analysis such as text analysis or linking to other datasets such as OpenStreetMap or Official National Statistics.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
