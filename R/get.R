@@ -111,13 +111,13 @@ get_notice_content = function(id, search_terms){
   search_result = any(search)
   borough = u %>% rvest::html_node("span") %>% rvest::html_text2()  # gets borough
   pub_date = u %>% rvest::html_node("dd time") %>% rvest::html_text2() #    gets publication date
-  notice_code = u %>% rvest::html_node("dd:nth-child(10)") %>% rvest::html_text2() # gets notice code
+  notice_id = u %>% rvest::html_node("dd:nth-child(10)") %>% rvest::html_text2() # gets notice id
   # # process content
   # class(content)
   # length(content)
   content_pasted = paste(content, collapse = "\n")
   # length(content_pasted) # single output
-  notice = data.frame(notice_code, pub_date, borough, search_result, content_pasted) # creates a dataframe
+  notice = data.frame(notice_id, pub_date, borough, search_result, content_pasted) # creates a dataframe
   notice = notice %>%
     dplyr::mutate(pub_date = lubridate::dmy(sub("\\,.*", "", pub_date))) %>%  # puts date in correct format
     dplyr::mutate(borough = factor(borough))  # factors borough

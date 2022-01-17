@@ -11,7 +11,7 @@ if they are relevant. All this data is then available in R dataframes to
 facilitate further analysis such as text analysis or linking to other
 datasets such as OpenStreetMap or Official National Statistics.
 
-## The Gazette - the Official Public Record in the UK
+### The Gazette - the Official Public Record in the UK
 
 The Gazette is the Official Public Record combining three publications:
 The London Gazette, The Belfast Gazette and The Edinburgh Gazette. It
@@ -87,7 +87,7 @@ Details on the Data formats can be found here
 for this interface is available at:
 <https://github.com/TheGazette/DevDocs/blob/master/home.md>
 
-## GazetteR installation
+### GazetteR installation
 
 You can install the developed version of CycleInfraLnd from
 [Github](https://github.com/PublicHealthDataGeek/GazetteR) with:
@@ -97,209 +97,109 @@ install.packages("devtools")
 devtools::install_github("PublicHealthDataGeek/GazetteR")
 ```
 
-## Examples
+### GazetteR functions
 
-These examples show
+These examples show how to get data from The Gazette Search and return
+it in a tidied or non-tided format.
 
 ``` r
-#library(GazetteR)
+library(GazetteR)
+test_tidy = get_gazette_feed(
+  categorycode = 15,
+  start_publish_date = "01/01/2021",
+  end_publish_date = "31/01/2021"
+) # returns tidied data with column headings that make sense and dates in correct date format
+names(test_tidy)
 ```
 
-### Proposed functions
-
-#### 1) Get_gazette_feed
-
-Purpose
-
--   gets the search results and puts them in an R dataframe
-
-Actions:
-
--   Queries the gazette notice feed -json
-
--   Specifies high level notice type and date range
-
--   Returns info and converts into text
-
--   Extract the useful info about the notices and puts it in a df
-
--   Reruns query until get to final page of info (notices$entry \<10)
-
--   Binds each df to the previous so get all the pages in one df
-
--   Limits the repeat queries to 1 per second – should be run outside
-    working hours
-
-Packages needed:
-
--   httr, stringr
-
-Current status:
-
--   Working function but not limited to outside working hours
-
-Validation/testing:
-
--   Need to check works from different notice types (currently only
-    tested for 15)
-
--   Need to check date ranges - can it work for a single day? multiple
-    years?
-
--   Compare results returned to the website search results
-
-Advanced work for function:
-
--   What happens if user adds a non-valid notice type or incorrectly
-    formatted date?
-
--   What happens if there are zero results?
-
--   ie need error responses
-
-#### 2) Tidy_gazette_feed ? Can this be amalgamated into the get_gazette_feed function
-
-Purpose:
-
--   tidies the gazette feed data frame
-
-Actions:
-
--   Takes the noticefeed df
-
--   Deletes columns that we don’t need
-
--   Factors columns that need to be factored
-
--   Changes date to correct format
-
--   Renames columns to more sensibl e names
-
--   Creates the id column that can then be searched on
-
-Current status:
-
--   have code working as a function I think
-
-Packages needed:
-
--   tidyverse, lubridate
-
-Validation/testing
-
--   Need to check works on different outputs of get_gazette_feed ???
-
-Advanced work for function: - ? none
-
-#### 3) Search_gazette_feed
-
-Purpose: allows user to search the tidied gazette feed dataframe by
-notice code and search terms.
-
-Actions:
-
--   Takes the tidy_gazette_feed
-
--   Filters on notice_code (if given
-
--   Filters on strings detected in first few lines of the Notice
-
-– Eg. Local Authority, Council, Borough or Transport for London
-
-– User can give a list or search terms
-
-– Can search using AND or OR
-
-Current status: - Basic search function written but needs testing - More
-advanced search function that allows search arguments to be options is
-written but doesnt work.
-
-Packages needed: - tidyverse, stringr
-
-QUESTIONS:
-
--   How do I make an argument optional in a function? E.g. notice code
-    and search terms?
-
--   If a user enters just one search term, how do I make search_type
-    (&\|) not have to be completed?
-
--   Are there any other search options that need to be include?
-
--   Does it search the entire content or just the first few lines that
-    are shown in the gazette feed?
-
-Validation/testing: Advanced work for function:
-
-#### 4) Get_gazette_notice_contents
-
-Purpose: Takes the unique notice ids that have been returned by the
-search_gazette_feed function and pulls down the notice content into R.
-
-Actions:
-
--   Takes the id from the tidy_gazette_feed or search_gazette_Feed df
-
--   Pastes that id into weblink
-
--   Queries the Gazette
-
--   Returns html object
-
--   Extracts id, borough, date of publication and content CURRENTLY
-    CONTENT IS A MESS – NEED TO PUT INTO ONE CELL
-
--   Add these values into a df - CURRENTLY 2 DF - need to be one - also
-    need to join to gazette_feed df that has additional data
-
--   Repeats for each id in the tidy_Gazette_feed df - LOOP NOT DEVELOPED
-    YET
-
--   Limits queries to 1 per sec
-
--   ? Tidies df? - or ? Separate function
-
-Current status
-
-– subfunctions developed for the content and the rest of the data but
-cant get these into a single obs in a df
-
--   no loop written
-
-Packages need:
-
--   rvest, tidyverse
-
-Validation/testing: Advanced work for function:
-
--   ? include the search_gazette_notice_contents functionality in this
-    function.
-
-#### 5) Search_gazette_notice_contents ? should this be combined with the above
-
-Purpose:
-
-Actions: - takes the df returned from get_gazette_notice_contents
-
--   For each noticecode, searches the body of the content for specific
-    search terms
-
--   Returns a new column that indicates whether those searchterms have
-    been found or not
-
-Current status:
-
--   can do it for one named noticecode, search terms are currently done
-    in this manner:
-
-contraflow_search_terms = c(“contraflow”, “CONTRAFLOW”, “contra-flow”,
-“CONTRA-FLOW”)
-
-stringr::str_detect(body_contra_test_notice_df,
-paste(contraflow_search_terms, collapse = “\|”))
-
-? More efficient way of doing it that allows user to enter any version
-of contraflow cases and it searches for them
-
-? Also have the collapse bit as an argument –presumably if change \| to
-& then it will do an AND search rather than OR
+    ## [1] "notice_url"     "status"         "notice_code"    "title"         
+    ## [5] "date_updated"   "date_published" "content"        "notice_id"
+
+``` r
+test_non_tidy = get_gazette_feed(
+  categorycode = 15,
+  start_publish_date = "01/01/2021",
+  end_publish_date = "31/01/2021",
+  tidy = FALSE
+) # return non-tidied data with original column headings and all data as character data type
+names(test_non_tidy)
+```
+
+    ## [1] "id"            "f:status"      "f:notice-code" "title"        
+    ## [5] "author"        "updated"       "published"     "category"     
+    ## [9] "content"
+
+Other functions allow you to get more data including the full text
+content of the notice. For example, `get_notice_content` allows you to
+specify a particular notice and extract more data such as the full text
+content of the notice and the borough. This function also lets you
+search the content and returns a TRUE/FALSE column depending on whether
+that terms is found in the content.
+
+``` r
+# From URL: https://www.thegazette.co.uk/notice/3487301
+content_3725064 = get_notice_content(3725064, "contraflow")
+names(content_3725064)
+```
+
+    ## [1] "notice_id"      "pub_date"       "borough"        "search_result" 
+    ## [5] "content_pasted"
+
+``` r
+print(content_3725064$content_pasted)
+```
+
+    ## [1] "published by authority | est 1665\n1. transport for london, hereby gives notice that it intends to make the above named order under section 6 of the road traffic regulation act 1984.\n2. the general nature and effect of the order will be:\n1) transfer authority status to transport for london on morley road south-eastern side to between lewisham high street and a point 17 metres south-east of a point opposite the extended north-western building line of no. 221 lewisham high street (extension of 6 metres);\n2) extend the exiting 9 metre loading only bay on morley road south-eastern side to a length of 15 metres, and amend the hours of operation to no stopping at any time‘ except ‘loading 10am-4pm loading max 40 mins’;\n3) amend the 15 metre loading only bay on morley road south-eastern side to allow taxis to use the bay between 4pm and 10am.\n3. the road which would be affected by the order is the a21 gla side road – morley road in the london borough of lewisham.\n4. a copy of the order, a statement of transport for london’s reasons for the proposals, a map indicating the location and effect of the order and copies of any order revoked, suspended or varied by the order can be inspected by visiting our website at www.tfl.gov.uk/traffic-orders-2021 then select traffic order gla/2021/0010 copies of the documents may be requested via email at trafficordersection@tfl,gov.uk, or by post at the following address quoting reference np/regulation/stot/bs/tro, gla/2021/0010.\n• transport for london, streets traffic order team (np/regulation/stot), palestra, 197 blackfriars road, london, se1 8nj.\n5. all objections and other representations to the proposed order must be made in writing and must specify the grounds on which they are made. objections and representations must be sent to transport for london, streets traffic order team, palestra, 197 blackfriars road, london, se1 8nj or by emailing trafficordersection@tfl.gov.uk quoting reference np/regulation/stot/bs/tro, gla/2021/0010, to arrive before 19th february 2021. please note due to covid-19 access to post is restricted and requests for documents and confirmation of your objections or representations may be delayed. objections and other representations may be communicated to other persons who may be affected.\ndated this 29th day of january 2021\njennifer melbourne, performance & planning manager - south, transport for london, palestra, 197 blackfriars road, london, se1 8nj\nthink of a digital signature as an electronic, encrypted, stamp of authentication on digital information. this signature confirms that the information originated from the trusted signer and has not been altered.\nthe gazette is published by tso (the stationery office) under the superintendence of her majesty's stationery office (hmso), part of the national archives\nall content is available under the open government licence v3.0, except where otherwise stated. however, please note that this licence does not cover the re-use of personal data. if you are interested in linking to this website please read our linking policy."
+
+The final function allows you to get the notice content for a list of
+notices.
+
+``` r
+content = get_content(c(3725064, 3487301), search_terms = "contraflow")
+dim(content)
+```
+
+    ## [1] 2 5
+
+You can then join this data to the results of the `get_gazette_feed`.
+
+``` r
+notice_3725064 = dplyr::left_join(content_3725064, test_tidy, by = "notice_id")
+names(notice_3725064)
+```
+
+    ##  [1] "notice_id"      "pub_date"       "borough"        "search_result" 
+    ##  [5] "content_pasted" "notice_url"     "status"         "notice_code"   
+    ##  [9] "title"          "date_updated"   "date_published" "content"
+
+### The Gazette and GazetteR limitations
+
+The GazetteR package reflects the limitations of The Gazette API and
+website. For example, The Gazette API states is it possible to use both
+categorycode and noticetype as parameters (categorycode being higher
+level e.g. 15 for transport whilst noticetype is subcategories eg 1501
+for Road Traffic Acts). However, we have not managed to get noticetype
+to work so have had to stick with categorycode. NB Confusing the API
+uses the terms categorycode and noticetype but The Gazette website
+search facility calls these ‘Notice type’ for categorycode and ‘Notice
+code’’ for noticetype.
+
+The data returned by the `get_gazette_feed` function reflects the
+limited content returned by The Gazette online search, namely a
+publication date, title and a few lines of content plus additional data
+such as the unique notice id, notice url and the 4 digit notice code
+from the API.
+
+This package was originally developed to look for notices that introduce
+contraflow bike lanes in London Boroughs specifically for notices with a
+category code of 15). So some of the column headings may be
+inappropriate for other searches (for example I have spotted that notice
+3723277 returns a ‘borough’ of Guildford that seems which seems to be
+the location of a Highways England office!). This package hasnt been
+tested with other Gazette category codes so the structure and content of
+the data returned may not be quite right.
+
+Please raise as issues or requests via the github issue page and I will
+get to these as an when I can. If anyone is interested in collaborating
+to improve the code or make it more robust for other searches then
+please get in touch via <ugm4cjt@leeds.ac.uk>.
