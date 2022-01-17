@@ -97,6 +97,9 @@ install.packages("devtools")
 devtools::install_github("PublicHealthDataGeek/GazetteR")
 ```
 
+Please note that The Gazette requests that users perform activity in
+non-business hours i.e. between 9pm and 7am.
+
 ### GazetteR functions
 
 These examples show how to get data from The Gazette Search and return
