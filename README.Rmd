@@ -1,15 +1,19 @@
 ---
-title: "Notes on Gazette API development"
-author: "C Tait"
-date: "12/01/2022"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Background to The Gazette
+# GazetteR
+  
+The purpose of this package is to facilitate the easy analysis of The Gazette information in R.  
+
+It achieves this by enabling users to search the online Gazette and identify notices that they are interested in obtaining.  It then obtains those notices and allows users to search the notice content to establish if they are relevant. All this data is then available in R dataframes to facilitate further analysis such as text analysis or linking to other datasets such as OpenStreetMap or Official National Statistics.   
+   
+   
+## The Gazette - the Official Public Record in the UK
 
 The Gazette is the Official Public Record combining three publications: The London Gazette, The Belfast Gazette and The Edinburgh Gazette. It predominantly consists of statutory notices i.e. where a person or organisation or company is legally required to advertise an event or proposal in The Gazette. Notices can only be placed in The Gazette by: registered and verified people, who are acting in an official capacity and who have the authority to create an official record of fact e.g. solicitors, executers of will.       
 
@@ -30,11 +34,8 @@ It contains over 450 different types of notices. Key categories include:
 Information on the different types of notices can be found here <https://www.thegazette.co.uk/noticecodes>.
 
 The Gazette also publishes specific supplements that gather together certain notices in a special edition. These include the Company Law Supplement containing details of information notified to or by Companies House such as Certificates of incorporation, company's memorandum and articles, company's directors etc; and the Ministry of Defence Supplement.    
-
-
-## Background to Package
-This package was developed to support a PhD project. To propose contraflow cycling on a one-way street, a Traffic Regulatory(?) Order has to be issued by the Highway Engineer (?) of the authority that is responsible for the highway (?).  These TROs have to be advertised to the public as part of the consultation. A subsequent TRO must be issued to facilitate the introduction of the contraflow cycling. In London, these TROs should be published in The Gazette.  
-
+  
+  
 The Gazette provides an online search function to identify notices.  This search facility includes the ability to search by:
 
 - free text
@@ -55,11 +56,23 @@ The Gazette has developed a API interface that allows authorised people to place
 Details on the Data formats can be found here <https://www.thegazette.co.uk/data/formats>.
 The Developer Documentation for this interface is available at: <https://github.com/TheGazette/DevDocs/blob/master/home.md>
 
-## Introduction to GazetteR
+## GazetteR installation
 
-The purpose of this package is to facilitate the easy analysis of Gazette information in R.  
+You can install the developed version of CycleInfraLnd from [Github](https://github.com/PublicHealthDataGeek/GazetteR) with:
 
-It achieves this by enabling users to search the online Gazette and identify notices that they are interested in obtaining.  It then obtains those notices and allows users to search the notice content to establish if they are relevant. All this data is then available in R dataframes to facilitate further analysis such as text analysis or linking to other datasets such as OpenStreetMap or Official National Statistics.
+``` r
+install.packages("devtools")
+devtools::install_github("PublicHealthDataGeek/GazetteR")
+```
+
+## Examples
+
+These examples show 
+
+```{r example}
+#library(GazetteR)
+
+```
 
 
 
