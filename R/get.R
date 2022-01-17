@@ -40,14 +40,14 @@ get_gazette_feed = function(categorycode = 15,
     query = list(
       categorycode = categorycode,
       `start-publish-date` = start_publish_date,
-      `end-publish-date` = end_publish_date)) # needs to be big long enough to get data back
+      `end-publish-date` = end_publish_date,
+      `results-page-size` = 100)) # needs to be big long enough to get data back
   #put content in df
   notices = jsonlite::fromJSON(txt = u)  #
   total_notices = notices$`f:total` # get total number of notice returned by the search
   notices_entries = notices$entry  # get relevent data into df
   notices_entries$author = notices_entries$author$name # changes column that is a dataframe to an actual column
   notices_entries$category = notices_entries$category$`@term`  # changes column that is a dataframe to an actual column
-  #notices_entries = subset(notices_entries, select = -c(link, `geo:Point`)) # drop columns
   notices_entries = subset(notices_entries, select = c(id, `f:status`, `f:notice-code`, title, author, updated, published, category, content)) # keep columns
   Sys.sleep(1) # pause for 1 sec
   i = 2
