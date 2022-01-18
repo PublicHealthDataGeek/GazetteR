@@ -79,12 +79,13 @@ tidy_gazette_feed = function(df) {
            status = `f:status`,
            notice_code = `f:notice-code`,
            date_updated = `updated`,
-           date_published = `published`) %>%
+           date_published = `published`,
+           feed_content = content) %>%
     dplyr::mutate(date_updated = lubridate::date(date_updated),
            date_published = lubridate::date(date_published),
            notice_url = stringr::str_remove(notice_url, "id/"),
            notice_id = stringr::str_remove(notice_url, "https://www.thegazette.co.uk/notice/"),
-           content = stringr::str_to_lower(content)) %>%
+           feed_content = stringr::str_to_lower(feed_content)) %>%
     dplyr::mutate_at(c("status", "notice_code", "title"), factor)
 }
 
@@ -99,9 +100,9 @@ tidy_gazette_feed = function(df) {
 #' @examples
 #' # From URL: https://www.thegazette.co.uk/notice/3487301
 #' x4 = get_notice_content(3487301, "contraflow")
-#' x4b = get_notice_content4(3487301, search_terms = c("contraflow", "contra-flow"))
-#' x4c = get_notice_content4(3487301, search_terms = c("cycling"))
-#' x4d = get_notice_content4(3487301, search_terms = c("taxi"))
+#' x4b = get_notice_content(3487301, search_terms = c("contraflow", "contra-flow"))
+#' x4c = get_notice_content(3487301, search_terms = c("cycling"))
+#' x4d = get_notice_content(3487301, search_terms = c("taxi"))
 get_notice_content = function(id, search_terms){
   # browser()
   url = paste0("https://www.thegazette.co.uk/notice/", id)
@@ -109,18 +110,23 @@ get_notice_content = function(id, search_terms){
   content = stringr::str_to_lower(u %>% rvest::html_nodes("p") %>% rvest::html_text2())
   search = stringr::str_detect(content, paste(search_terms, collapse = "|"))
   search_result = any(search)
-  borough = u %>% rvest::html_node("span") %>% rvest::html_text2()  # gets borough
+  #borough = u %>% rvest::html_node("span") %>% rvest::html_text2()  # gets borough
+  h3_node_table = u %>% rvest::html_nodes("h3") %>% rvest::html_text2()
+  subtitle = h3_node_table[[2]] # gets subtitle of notice
+  enabling_legislation = u %>% rvest::html_node("div h3") %>% rvest::html_text2() # gets enabling legislation
+  authority = u %>% rvest::html_node("h2 span") %>% rvest::html_text2() #gets authority
   pub_date = u %>% rvest::html_node("dd time") %>% rvest::html_text2() #    gets publication date
   notice_id = u %>% rvest::html_node("dd:nth-child(10)") %>% rvest::html_text2() # gets notice id
+  search_terms = paste(search_terms, collapse = "|")
   # # process content
   # class(content)
   # length(content)
-  content_pasted = paste(content, collapse = "\n")
-  # length(content_pasted) # single output
-  notice = data.frame(notice_id, pub_date, borough, search_result, content_pasted) # creates a dataframe
+  body_text = paste(content, collapse = "\n")
+  # length(body_text) # single output
+  notice = data.frame(notice_id, pub_date, authority, subtitle, enabling_legislation, body_text, search_terms, search_result) # creates a dataframe
   notice = notice %>%
     dplyr::mutate(pub_date = lubridate::dmy(sub("\\,.*", "", pub_date))) %>%  # puts date in correct format
-    dplyr::mutate(borough = factor(borough))  # factors borough
+    dplyr::mutate(authority = factor(authority))  # factors authority
 }
 
 #' Get content associated with ids
