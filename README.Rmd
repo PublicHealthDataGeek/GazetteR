@@ -1,9 +1,11 @@
 ---
 output: github_document
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
 
 # GazetteR
@@ -94,22 +96,34 @@ Other functions allow you to get more data including the full text content of th
 # From URL: https://www.thegazette.co.uk/notice/3487301
 content_3725064 = get_notice_content(3725064, "contraflow")
 names(content_3725064)
-print(content_3725064$content_pasted)
 ```
 
-The final function allows you to get the notice content for a list of notices. 
+```{r, echo = FALSE}
+content_3725064[, 1:5] %>%
+  knitr::kable()
+```
+
+```{r, echo = FALSE}
+content_3725064[, 6:8] %>%
+  knitr::kable() %>%
+  kableExtra::column_spec(1, width = "50em") %>%
+  kableExtra::column_spec(2, extra_css = "vertical-align:top") %>%
+  kableExtra::column_spec(3, extra_css = "vertical-align:top")
+```
+  
+You can then join this data to the results of the `get_gazette_feed`.  
+
+```{r}
+notice_3725064 = dplyr::left_join(content_3725064, test_tidy, by = "notice_id")
+names(notice_3725064)
+```
+  
+The final function, `get_content` allows you to get the notice content for a list of notices. 
 
 ```{r}
 content = get_content(c(3725064, 3487301), search_terms = "contraflow")
 dim(content)
 ```
-  
-You can then join this data to the results of the `get_gazette_feed`. 
-```{r}
-notice_3725064 = dplyr::left_join(content_3725064, test_tidy, by = "notice_id")
-names(notice_3725064)
-```
-
 
 
 ### The Gazette and GazetteR limitations
@@ -117,6 +131,6 @@ The GazetteR package reflects the limitations of The Gazette API and website.  F
 
 The data returned by the `get_gazette_feed` function reflects the limited content returned by The Gazette online search, namely a publication date, title and a few lines of content plus additional data such as the unique notice id, notice url and the 4 digit notice code from the API.  
 
-This package was originally developed to look for notices that introduce contraflow bike lanes in London Boroughs specifically for notices with a category code of 15).  So some of the column headings may be inappropriate for other searches (for example I have spotted that notice 3723277 returns a 'borough' of Guildford that seems which seems to be the location of a Highways England office!).  This package hasnt been tested with other Gazette category codes so the structure and content of the data returned may not be quite right. 
+This package was originally developed to look for notices that introduce contraflow bike lanes in London Boroughs specifically for notices with a category code of 15).  So some of the column headings may be inappropriate for other searches.  This package hasnt been tested with other Gazette category codes so the structure and content of the data returned may not be quite right. 
 
 Please raise as issues or requests via the github issue page and I will get to these as an when I can.  If anyone is interested in collaborating to improve the code or make it more robust for other searches then please get in touch via ugm4cjt@leeds.ac.uk.  

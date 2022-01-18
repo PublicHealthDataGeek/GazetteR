@@ -116,7 +116,7 @@ names(test_tidy)
 ```
 
     ## [1] "notice_url"     "status"         "notice_code"    "title"         
-    ## [5] "date_updated"   "date_published" "content"        "notice_id"
+    ## [5] "date_updated"   "date_published" "feed_content"   "notice_id"
 
 ``` r
 test_non_tidy = get_gazette_feed(
@@ -145,24 +145,85 @@ content_3725064 = get_notice_content(3725064, "contraflow")
 names(content_3725064)
 ```
 
-    ## [1] "notice_id"      "pub_date"       "borough"        "search_result" 
-    ## [5] "content_pasted"
+    ## [1] "notice_id"            "pub_date"             "authority"           
+    ## [4] "subtitle"             "enabling_legislation" "body_text"           
+    ## [7] "search_terms"         "search_result"
 
-``` r
-print(content_3725064$content_pasted)
-```
+| notice_id | pub_date   | authority            | subtitle                                                                                                                                | enabling_legislation             |
+|:----------|:-----------|:---------------------|:----------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------|
+| 3725064   | 2021-01-29 | Transport for London | THE GLA ROADS AND SIDE ROADS (LEWISHAM) RED ROUTE CONSOLIDATION TRAFFIC ORDER 2007 A21 GLA SIDE ROAD (MORLEY ROAD) VARIATION ORDER 2021 | ROAD TRAFFIC REGULATION ACT 1984 |
 
-    ## [1] "published by authority | est 1665\n1. transport for london, hereby gives notice that it intends to make the above named order under section 6 of the road traffic regulation act 1984.\n2. the general nature and effect of the order will be:\n1) transfer authority status to transport for london on morley road south-eastern side to between lewisham high street and a point 17 metres south-east of a point opposite the extended north-western building line of no. 221 lewisham high street (extension of 6 metres);\n2) extend the exiting 9 metre loading only bay on morley road south-eastern side to a length of 15 metres, and amend the hours of operation to no stopping at any time‘ except ‘loading 10am-4pm loading max 40 mins’;\n3) amend the 15 metre loading only bay on morley road south-eastern side to allow taxis to use the bay between 4pm and 10am.\n3. the road which would be affected by the order is the a21 gla side road – morley road in the london borough of lewisham.\n4. a copy of the order, a statement of transport for london’s reasons for the proposals, a map indicating the location and effect of the order and copies of any order revoked, suspended or varied by the order can be inspected by visiting our website at www.tfl.gov.uk/traffic-orders-2021 then select traffic order gla/2021/0010 copies of the documents may be requested via email at trafficordersection@tfl,gov.uk, or by post at the following address quoting reference np/regulation/stot/bs/tro, gla/2021/0010.\n• transport for london, streets traffic order team (np/regulation/stot), palestra, 197 blackfriars road, london, se1 8nj.\n5. all objections and other representations to the proposed order must be made in writing and must specify the grounds on which they are made. objections and representations must be sent to transport for london, streets traffic order team, palestra, 197 blackfriars road, london, se1 8nj or by emailing trafficordersection@tfl.gov.uk quoting reference np/regulation/stot/bs/tro, gla/2021/0010, to arrive before 19th february 2021. please note due to covid-19 access to post is restricted and requests for documents and confirmation of your objections or representations may be delayed. objections and other representations may be communicated to other persons who may be affected.\ndated this 29th day of january 2021\njennifer melbourne, performance & planning manager - south, transport for london, palestra, 197 blackfriars road, london, se1 8nj\nthink of a digital signature as an electronic, encrypted, stamp of authentication on digital information. this signature confirms that the information originated from the trusted signer and has not been altered.\nthe gazette is published by tso (the stationery office) under the superintendence of her majesty's stationery office (hmso), part of the national archives\nall content is available under the open government licence v3.0, except where otherwise stated. however, please note that this licence does not cover the re-use of personal data. if you are interested in linking to this website please read our linking policy."
-
-The final function allows you to get the notice content for a list of
-notices.
-
-``` r
-content = get_content(c(3725064, 3487301), search_terms = "contraflow")
-dim(content)
-```
-
-    ## [1] 2 5
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+body_text
+</th>
+<th style="text-align:left;">
+search_terms
+</th>
+<th style="text-align:left;">
+search_result
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;width: 50em; ">
+published by authority \| est 1665 1. transport for london, hereby gives
+notice that it intends to make the above named order under section 6 of
+the road traffic regulation act 1984. 2. the general nature and effect
+of the order will be: 1) transfer authority status to transport for
+london on morley road south-eastern side to between lewisham high street
+and a point 17 metres south-east of a point opposite the extended
+north-western building line of no. 221 lewisham high street (extension
+of 6 metres); 2) extend the exiting 9 metre loading only bay on morley
+road south-eastern side to a length of 15 metres, and amend the hours of
+operation to no stopping at any time‘ except ‘loading 10am-4pm loading
+max 40 mins’; 3) amend the 15 metre loading only bay on morley road
+south-eastern side to allow taxis to use the bay between 4pm and 10am.
+3. the road which would be affected by the order is the a21 gla side
+road – morley road in the london borough of lewisham. 4. a copy of the
+order, a statement of transport for london’s reasons for the proposals,
+a map indicating the location and effect of the order and copies of any
+order revoked, suspended or varied by the order can be inspected by
+visiting our website at www.tfl.gov.uk/traffic-orders-2021 then select
+traffic order gla/2021/0010 copies of the documents may be requested via
+email at <trafficordersection@tfl>,gov.uk, or by post at the following
+address quoting reference np/regulation/stot/bs/tro, gla/2021/0010. •
+transport for london, streets traffic order team (np/regulation/stot),
+palestra, 197 blackfriars road, london, se1 8nj. 5. all objections and
+other representations to the proposed order must be made in writing and
+must specify the grounds on which they are made. objections and
+representations must be sent to transport for london, streets traffic
+order team, palestra, 197 blackfriars road, london, se1 8nj or by
+emailing <trafficordersection@tfl.gov.uk> quoting reference
+np/regulation/stot/bs/tro, gla/2021/0010, to arrive before 19th february
+2021. please note due to covid-19 access to post is restricted and
+requests for documents and confirmation of your objections or
+representations may be delayed. objections and other representations may
+be communicated to other persons who may be affected. dated this 29th
+day of january 2021 jennifer melbourne, performance & planning manager -
+south, transport for london, palestra, 197 blackfriars road, london, se1
+8nj think of a digital signature as an electronic, encrypted, stamp of
+authentication on digital information. this signature confirms that the
+information originated from the trusted signer and has not been altered.
+the gazette is published by tso (the stationery office) under the
+superintendence of her majesty’s stationery office (hmso), part of the
+national archives all content is available under the open government
+licence v3.0, except where otherwise stated. however, please note that
+this licence does not cover the re-use of personal data. if you are
+interested in linking to this website please read our linking policy.
+</td>
+<td style="text-align:left;vertical-align:top">
+contraflow
+</td>
+<td style="text-align:left;vertical-align:top">
+FALSE
+</td>
+</tr>
+</tbody>
+</table>
 
 You can then join this data to the results of the `get_gazette_feed`.
 
@@ -171,9 +232,21 @@ notice_3725064 = dplyr::left_join(content_3725064, test_tidy, by = "notice_id")
 names(notice_3725064)
 ```
 
-    ##  [1] "notice_id"      "pub_date"       "borough"        "search_result" 
-    ##  [5] "content_pasted" "notice_url"     "status"         "notice_code"   
-    ##  [9] "title"          "date_updated"   "date_published" "content"
+    ##  [1] "notice_id"            "pub_date"             "authority"           
+    ##  [4] "subtitle"             "enabling_legislation" "body_text"           
+    ##  [7] "search_terms"         "search_result"        "notice_url"          
+    ## [10] "status"               "notice_code"          "title"               
+    ## [13] "date_updated"         "date_published"       "feed_content"
+
+The final function, `get_content` allows you to get the notice content
+for a list of notices.
+
+``` r
+content = get_content(c(3725064, 3487301), search_terms = "contraflow")
+dim(content)
+```
+
+    ## [1] 2 8
 
 ### The Gazette and GazetteR limitations
 
@@ -196,11 +269,9 @@ from the API.
 This package was originally developed to look for notices that introduce
 contraflow bike lanes in London Boroughs specifically for notices with a
 category code of 15). So some of the column headings may be
-inappropriate for other searches (for example I have spotted that notice
-3723277 returns a ‘borough’ of Guildford that seems which seems to be
-the location of a Highways England office!). This package hasnt been
-tested with other Gazette category codes so the structure and content of
-the data returned may not be quite right.
+inappropriate for other searches. This package hasnt been tested with
+other Gazette category codes so the structure and content of the data
+returned may not be quite right.
 
 Please raise as issues or requests via the github issue page and I will
 get to these as an when I can. If anyone is interested in collaborating
